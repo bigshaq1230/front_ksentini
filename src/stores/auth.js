@@ -10,8 +10,9 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       await api.get('/auth/me')
       authenticated.value = true
-    } catch {
-      authenticated.value = false
+    } catch (e) {
+      // Only a real 401 means logged out; when offline, keep the app usable (pages show the error).
+      authenticated.value = e.status !== 401
     }
     return authenticated.value
   }
@@ -24,6 +25,8 @@ export const useAuthStore = defineStore('auth', () => {
   async function logout() {
     await api.post('/auth/logout')
     authenticated.value = false
+    // Photos cached by the service worker shouldn't stay on a shared device.
+    await globalThis.caches?.delete('photos')
   }
 
   return { authenticated, check, login, logout }

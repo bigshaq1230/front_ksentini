@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { Camera, ChevronLeft, ChevronRight, Images, Loader2, Trash2, X } from 'lucide-vue-next'
 import { api, photoUrl } from '@/api'
 import { useAction } from '@/composables'
+import { toast } from '@/stores/toast'
 import { compressImage } from '@/utils/image'
 import { PHOTO_PHASES } from '@/utils/format'
 
@@ -39,6 +40,7 @@ const upload = useAction(async (event) => {
       form.append('files', await compressImage(file))
       await api.post(`/jobs/${props.jobId}/photos`, form)
     }
+    toast(files.length > 1 ? `${files.length} photos ajoutées` : 'Photo ajoutée')
   } finally {
     progress.value = ''
     emit('changed')
@@ -82,6 +84,7 @@ const remove = useAction(async () => {
   if (!confirm('Supprimer définitivement cette photo ?')) return
   const next = ordered.value.length > 1 ? neighbour(1).id : null
   await api.del(`/photos/${current.value.id}`)
+  toast('Photo supprimée')
   currentId.value = next
   emit('changed')
 })

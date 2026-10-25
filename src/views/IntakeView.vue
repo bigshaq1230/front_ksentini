@@ -5,6 +5,8 @@ import { ChevronRight, Plus, Search, UserPlus, X } from 'lucide-vue-next'
 import { api } from '@/api'
 import { useAction, useLoader } from '@/composables'
 import { formatPlate, parsePlate, vehicleTitle } from '@/utils/format'
+import { VEHICLE_ICONS } from '@/utils/icons'
+import AppAvatar from '@/components/AppAvatar.vue'
 import AppModal from '@/components/AppModal.vue'
 import AppSpinner from '@/components/AppSpinner.vue'
 import PlateBadge from '@/components/PlateBadge.vue'
@@ -63,10 +65,10 @@ const create = useAction(async () => {
 <template>
   <div class="space-y-3">
     <div class="relative">
-      <Search class="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-slate-400" />
+      <Search class="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-slate-400" />
       <input
         v-model="q"
-        class="input pr-10 pl-10"
+        class="input bg-white pr-10 pl-11 shadow-card"
         type="text"
         enterkeyhint="search"
         placeholder="Plaque, modèle, client ou téléphone…"
@@ -77,9 +79,9 @@ const create = useAction(async () => {
       </button>
     </div>
 
-    <button class="btn w-full justify-start border-2 border-dashed border-slate-300 py-3 ring-0" @click="startCreate">
-      <UserPlus class="size-5 text-blue-600" />
-      <span>Nouveau client et véhicule</span>
+    <button class="btn btn-primary w-full justify-start py-3.5" @click="startCreate">
+      <span class="flex size-8 items-center justify-center rounded-lg bg-white/20"><UserPlus class="size-5" /></span>
+      <span class="text-base">Nouveau client et véhicule</span>
     </button>
 
     <p v-if="results.error.value" class="text-sm text-red-600">{{ results.error.value }}</p>
@@ -93,8 +95,9 @@ const create = useAction(async () => {
         Aucun résultat pour « {{ q }} ».
       </p>
 
-      <section v-for="owner in results.data.value" :key="owner.id" class="card p-0">
+      <section v-for="owner in results.data.value" :key="owner.id" class="card overflow-hidden p-0">
         <div class="flex items-center gap-2 border-b border-slate-100 px-4 py-2.5">
+          <AppAvatar :name="owner.name" />
           <RouterLink :to="{ name: 'customer', params: { id: owner.id } }" class="min-w-0 flex-1">
             <span class="block truncate font-semibold">{{ owner.name }}</span>
             <span v-if="owner.phone" class="text-sm text-slate-500">{{ owner.phone }}</span>
@@ -109,8 +112,11 @@ const create = useAction(async () => {
           :class="{ 'bg-blue-50/50': q.trim() && v.matched }"
           @click="openVehicle(v.id)"
         >
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-xl" :class="v.open_job_id ? 'bg-blue-100 text-blue-600' : 'bg-slate-100 text-slate-500'">
+            <component :is="VEHICLE_ICONS[v.type]" class="size-5" />
+          </span>
           <span class="min-w-0 flex-1">
-            <span class="block truncate">{{ vehicleTitle(v) }}</span>
+            <span class="block truncate font-medium">{{ vehicleTitle(v) }}</span>
             <span v-if="v.open_job_id" class="text-xs font-medium text-blue-700">En atelier</span>
           </span>
           <PlateBadge :plate="v.plate" />

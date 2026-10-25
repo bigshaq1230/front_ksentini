@@ -21,6 +21,13 @@ export function formatDate(s) {
   return parseDate(s).toLocaleDateString(LOCALE, { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: TIME_ZONE })
 }
 
+export function greeting() {
+  const now = new Date()
+  const hour = Number(now.toLocaleString('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: TIME_ZONE }))
+  const date = now.toLocaleDateString(LOCALE, { weekday: 'long', day: 'numeric', month: 'long', timeZone: TIME_ZONE })
+  return { hello: hour >= 18 ? 'Bonsoir' : 'Bonjour', date }
+}
+
 export const today = () => new Date().toLocaleDateString('sv-SE', { timeZone: TIME_ZONE }) // YYYY-MM-DD
 
 export function daysSince(s) {
@@ -29,10 +36,10 @@ export function daysSince(s) {
 }
 
 export const JOB_STATUSES = {
-  quote: { label: 'Devis', color: 'bg-amber-100 text-amber-800', bar: 'bg-amber-400' },
-  in_progress: { label: 'En cours', color: 'bg-blue-100 text-blue-800', bar: 'bg-blue-500' },
-  done: { label: 'Terminé', color: 'bg-green-100 text-green-800', bar: 'bg-green-500' },
-  cancelled: { label: 'Annulé', color: 'bg-red-100 text-red-700', bar: 'bg-red-400' },
+  quote: { label: 'Devis', color: 'bg-amber-100 text-amber-800', bar: 'bg-amber-400', tile: 'bg-amber-100 text-amber-600' },
+  in_progress: { label: 'En cours', color: 'bg-blue-100 text-blue-800', bar: 'bg-blue-500', tile: 'bg-blue-100 text-blue-600' },
+  done: { label: 'Terminé', color: 'bg-emerald-100 text-emerald-800', bar: 'bg-emerald-500', tile: 'bg-emerald-100 text-emerald-600' },
+  cancelled: { label: 'Annulé', color: 'bg-red-100 text-red-700', bar: 'bg-red-400', tile: 'bg-red-100 text-red-500' },
 }
 // Normal progression of a job, shown as a stepper.
 export const STATUS_FLOW = ['quote', 'in_progress', 'done']

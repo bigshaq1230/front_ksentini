@@ -4,6 +4,7 @@ import { RouterLink, useRouter } from 'vue-router'
 import { ChevronRight, Search, UserPlus } from 'lucide-vue-next'
 import { api } from '@/api'
 import { useLoader } from '@/composables'
+import AppAvatar from '@/components/AppAvatar.vue'
 import AppModal from '@/components/AppModal.vue'
 import AppSpinner from '@/components/AppSpinner.vue'
 import CustomerForm from '@/components/CustomerForm.vue'
@@ -20,14 +21,6 @@ watch(q, () => {
 })
 onMounted(list.load)
 
-const initials = (name) =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
-
 async function create(data) {
   const customer = await api.post('/customers', data)
   router.push({ name: 'customer', params: { id: customer.id } })
@@ -38,8 +31,8 @@ async function create(data) {
   <div class="space-y-3">
     <div class="flex gap-2">
       <div class="relative flex-1">
-        <Search class="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-slate-400" />
-        <input v-model="q" class="input pl-10" type="text" enterkeyhint="search" placeholder="Nom ou téléphone…" />
+        <Search class="pointer-events-none absolute top-1/2 left-3.5 size-5 -translate-y-1/2 text-slate-400" />
+        <input v-model="q" class="input bg-white pl-11 shadow-card" type="text" enterkeyhint="search" placeholder="Nom ou téléphone…" />
       </div>
       <button class="btn btn-primary shrink-0 px-3" aria-label="Nouveau client" @click="creating = true">
         <UserPlus class="size-5" />
@@ -57,11 +50,9 @@ async function create(data) {
         :to="{ name: 'customer', params: { id: c.id } }"
         class="flex items-center gap-3 px-4 py-3 active:bg-slate-50"
       >
-        <span class="flex size-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
-          {{ initials(c.name) }}
-        </span>
+        <AppAvatar :name="c.name" />
         <span class="min-w-0 flex-1">
-          <span class="block truncate font-medium">{{ c.name }}</span>
+          <span class="block truncate font-semibold">{{ c.name }}</span>
           <span class="text-sm text-slate-500">{{ c.phone || c.email || '—' }}</span>
         </span>
         <span class="text-xs text-slate-400">{{ c.vehicle_count }} véh.</span>

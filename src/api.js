@@ -16,7 +16,12 @@ async function request(method, path, body) {
     init.body = JSON.stringify(body)
   }
 
-  const res = await fetch(`/api${path}`, init)
+  let res
+  try {
+    res = await fetch(`/api${path}`, init)
+  } catch {
+    throw new ApiError(0, 'Pas de connexion internet')
+  }
   const data = res.headers.get('content-type')?.includes('application/json') ? await res.json() : null
 
   if (!res.ok) {

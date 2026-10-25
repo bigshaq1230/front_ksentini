@@ -1,33 +1,78 @@
+@import '@fontsource-variable/inter';
 @import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px -4px rgb(15 23 42 / 0.08);
+  --shadow-float: 0 8px 30px -6px rgb(15 23 42 / 0.25);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-slate-100 font-sans text-slate-900 antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+    overscroll-behavior-y: none;
+  }
+  button,
+  a {
+    @apply transition-[background-color,box-shadow,transform,color] duration-150;
+  }
+}
 
 @layer components {
   .card {
-    @apply rounded-xl bg-white p-4 shadow-sm ring-1 ring-slate-200;
+    @apply rounded-2xl bg-white p-4 shadow-card ring-1 ring-slate-900/5;
   }
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium
-      bg-white text-slate-700 ring-1 ring-slate-300 active:bg-slate-100 disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-slate-700
+      shadow-sm ring-1 ring-slate-200 active:scale-[0.98] active:bg-slate-50 disabled:pointer-events-none disabled:opacity-50;
   }
   .btn-primary {
-    @apply bg-blue-600 text-white ring-blue-600 active:bg-blue-700;
+    @apply bg-gradient-to-b from-blue-500 to-blue-600 text-white shadow-md shadow-blue-600/25 ring-blue-600 active:from-blue-600 active:to-blue-700;
   }
   .btn-danger {
-    @apply bg-white text-red-600 ring-red-300 active:bg-red-50;
+    @apply bg-white text-red-600 ring-red-200 active:bg-red-50;
   }
   .input {
-    @apply block w-full rounded-lg border-0 bg-white px-3 py-2.5 text-base ring-1 ring-slate-300
-      placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500 focus:outline-none;
+    @apply block w-full rounded-xl border-0 bg-slate-50 px-3.5 py-3 text-base ring-1 ring-slate-200
+      placeholder:text-slate-400 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none;
   }
   .label {
-    @apply mb-1 block text-sm font-medium text-slate-600;
+    @apply mb-1.5 block text-sm font-medium text-slate-600;
   }
   .section-title {
-    @apply mb-2 text-sm font-semibold uppercase tracking-wide text-slate-500;
+    @apply mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase;
   }
+  .hero {
+    @apply relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950 p-4 text-white shadow-float;
+  }
+}
+
+/* Route transition */
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.page-leave-to {
+  opacity: 0;
 }
 
 @media print {
   .no-print {
     display: none !important;
+  }
+  .hero {
+    background: none !important;
+    color: black !important;
+    box-shadow: none !important;
   }
 }

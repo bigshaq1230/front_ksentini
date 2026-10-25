@@ -3,6 +3,7 @@ import { computed, reactive, ref } from 'vue'
 import { CircleHelp, Hammer, Package, Paintbrush, Pencil, Plus } from 'lucide-vue-next'
 import { api } from '@/api'
 import { useAction } from '@/composables'
+import { toast } from '@/stores/toast'
 import { ITEM_KINDS, formatMoney } from '@/utils/format'
 import ItemEditor from './ItemEditor.vue'
 
@@ -41,8 +42,10 @@ function add(kind) {
 
 const save = useAction(async () => {
   const body = { ...form, quantity: form.quantity === '' ? 1 : form.quantity, unit_price: form.unit_price === '' ? 0 : form.unit_price }
-  if (editing.value === 'new') await api.post(`/jobs/${props.jobId}/items`, body)
+  const isNew = editing.value === 'new'
+  if (isNew) await api.post(`/jobs/${props.jobId}/items`, body)
   else await api.put(`/items/${editing.value}`, body)
+  toast(isNew ? 'Ligne ajoutée' : 'Ligne modifiée')
   editing.value = null
   emit('changed')
 })
@@ -50,13 +53,14 @@ const save = useAction(async () => {
 const remove = useAction(async () => {
   if (!confirm('Supprimer cette ligne ?')) return
   await api.del(`/items/${editing.value}`)
+  toast('Ligne supprimée')
   editing.value = null
   emit('changed')
 })
 </script>
 
 <template>
-  <section class="card p-0">
+  <section class="card overflow-hidden p-0">
     <div class="flex items-center justify-between px-4 pt-4 pb-2">
       <h3 class="section-title mb-0">Travaux</h3>
       <span class="text-sm text-slate-500">{{ items.length }} ligne(s)</span>
@@ -75,7 +79,7 @@ const remove = useAction(async () => {
         />
         <!-- Display row -->
         <button v-else class="flex w-full items-center gap-3 px-4 py-3 text-left active:bg-slate-50" @click="edit(item)">
-          <span class="flex size-9 shrink-0 items-center justify-center rounded-full" :class="KIND_STYLE[item.kind ?? 'other'].color">
+          <span class="flex size-10 shrink-0 items-center justify-center rounded-xl" :class="KIND_STYLE[item.kind ?? 'other'].color">
             <component :is="KIND_STYLE[item.kind ?? 'other'].icon" class="size-4" />
           </span>
           <span class="min-w-0 flex-1">
@@ -102,9 +106,9 @@ const remove = useAction(async () => {
       </button>
     </div>
 
-    <div class="flex items-center justify-between rounded-b-xl border-t border-slate-200 bg-slate-50 px-4 py-3">
-      <span class="font-medium">Total</span>
-      <span class="text-lg font-bold">{{ formatMoney(total) }}</span>
+    <div class="flex items-center justify-between bg-gradient-to-r from-slate-900 to-slate-800 px-4 py-3.5 text-white">
+      <span class="text-sm font-medium text-slate-300">Total travaux</span>
+      <span class="text-xl font-bold tracking-tight">{{ formatMoney(total) }}</span>
     </div>
   </section>
 </template>
