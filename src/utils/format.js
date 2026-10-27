@@ -97,3 +97,19 @@ export function whatsappUrl(phone) {
   if (digits.length === 8) digits = '216' + digits
   return digits.length >= 10 ? `https://wa.me/${digits}` : null
 }
+
+// --- Quotes ------------------------------------------------------------------
+
+export const quoteNumber = (job) => `D${(job.date_in ?? job.created_at ?? today()).slice(0, 4)}-${String(job.id).padStart(4, '0')}`
+
+export function quoteTotals(items, vatRate) {
+  const subtotal = items.reduce((sum, i) => sum + i.quantity * i.unit_price, 0)
+  const vat = vatRate > 0 ? Math.round(subtotal * vatRate * 10) / 1000 : 0
+  return { subtotal, vat, total: subtotal + vat }
+}
+
+export function addDays(ymd, days) {
+  const d = new Date(`${ymd}T12:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + days)
+  return d.toISOString().slice(0, 10)
+}

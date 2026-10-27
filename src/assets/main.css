@@ -10,6 +10,8 @@
 @layer base {
   html {
     -webkit-tap-highlight-color: transparent;
+    /* No double-tap zoom: quick repeated taps (PIN pad, quantities) stay taps. */
+    touch-action: manipulation;
   }
   body {
     @apply bg-slate-100 font-sans text-slate-900 antialiased;
@@ -19,6 +21,9 @@
   button,
   a {
     @apply transition-[background-color,box-shadow,transform,color] duration-150;
+  }
+  button {
+    @apply select-none;
   }
 }
 
@@ -69,6 +74,12 @@
 @media print {
   .no-print {
     display: none !important;
+  }
+  @page {
+    margin: 12mm;
+  }
+  body {
+    background: white !important;
   }
   .hero {
     background: none !important;

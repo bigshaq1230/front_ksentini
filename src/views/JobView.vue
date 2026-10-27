@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import { Calendar, CalendarCheck, Check, ChevronRight, Pencil, Printer } from 'lucide-vue-next'
+import { Calendar, CalendarCheck, Check, ChevronRight, FileText, Pencil, Printer } from 'lucide-vue-next'
 import { api } from '@/api'
 import { useAction, useLoader } from '@/composables'
 import { toast } from '@/stores/toast'
@@ -161,6 +161,13 @@ const remove = useAction(async () => {
       </section>
 
       <JobItems :job-id="job.data.value.id" :items="job.data.value.items" @changed="job.load" />
+      <RouterLink
+        v-if="job.data.value.items.length"
+        :to="{ name: 'quote', params: { id: job.data.value.id } }"
+        class="no-print btn btn-primary w-full py-3"
+      >
+        <FileText class="size-4" /> Devis — voir et envoyer (WhatsApp, e-mail)
+      </RouterLink>
       <PhotoGallery :job-id="job.data.value.id" :photos="job.data.value.photos" @changed="job.load" />
 
       <div class="no-print flex items-center justify-between pt-2">

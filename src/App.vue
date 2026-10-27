@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
-import { ArrowLeft, Download, LogOut, Plus, Users, WifiOff, Wrench } from 'lucide-vue-next'
+import { ArrowLeft, Download, LogOut, Plus, Settings, Users, WifiOff, Wrench } from 'lucide-vue-next'
 import { useAuthStore } from '@/stores/auth'
 import { canInstall, install, online } from '@/pwa'
 import AppToasts from '@/components/AppToasts.vue'
@@ -50,6 +50,9 @@ const tabs = [
         >
           <Download class="size-4" /> Installer
         </button>
+        <RouterLink v-if="!route.meta.back" to="/parametres" class="rounded-full p-2 text-slate-400 active:bg-white/10" aria-label="Mon atelier">
+          <Settings class="size-5" />
+        </RouterLink>
         <button v-if="!route.meta.back" class="rounded-full p-2 text-slate-400 active:bg-white/10" aria-label="Déconnexion" @click="logout">
           <LogOut class="size-5" />
         </button>
